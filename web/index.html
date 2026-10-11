@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agente · Registro como Proveedor</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Agente · Registro como Proveedor</h1>
+    <span id="health" class="badge">conectando…</span>
+  </header>
+
+  <main>
+    <div id="chat" class="chat"></div>
+
+    <div id="confirm-banner" class="confirm-banner hidden">
+      El agente espera tu confirmación para continuar.
+    </div>
+
+    <form id="form" class="input-row">
+      <input id="input" type="text" autocomplete="off"
+        placeholder='Ej: Procesa el caso "ec-corp-andina". No envíes nada todavía.' />
+      <button type="submit">Enviar</button>
+    </form>
+
+    <div class="examples">
+      <button class="chip" data-text='Procesa el caso "co-industrias-delta". No envíes nada todavía.'>co-industrias-delta</button>
+      <button class="chip" data-text='Procesa el caso "ec-corp-andina". No envíes nada todavía.'>ec-corp-andina</button>
+      <button class="chip" data-text='Procesa el caso "hn-agroexport-sula". No envíes nada todavía.'>hn-agroexport-sula</button>
+      <button class="chip" data-text='Procesa el caso "pa-logistica-istmo". No envíes nada todavía.'>pa-logistica-istmo</button>
+    </div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
