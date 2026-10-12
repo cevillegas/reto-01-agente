@@ -88,6 +88,31 @@ const server = createServer(async (req, res) => {
       });
     }
 
+    // --- Archivos generados (out/) ---
+    if (url.pathname.startsWith("/out/")) {
+      const full = join(PROJECT_DIR, url.pathname);
+      if (!full.startsWith(join(PROJECT_DIR, "out"))) {
+        res.writeHead(403);
+        return res.end("Forbidden");
+      }
+      try {
+        const contenido = await readFile(full);
+        const ext = extname(full);
+        const mime: Record<string, string> = {
+          ".md": "text/plain; charset=utf-8",
+          ".pdf": "application/pdf",
+          ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          ".json": "application/json; charset=utf-8",
+          ".txt": "text/plain; charset=utf-8",
+        };
+        res.writeHead(200, { "Content-Type": mime[ext] ?? "application/octet-stream" });
+        return res.end(contenido);
+      } catch {
+        res.writeHead(404);
+        return res.end("Not found");
+      }
+    }
+
     // --- Front estatico ---
     let filePath = url.pathname === "/" ? "/index.html" : url.pathname;
     const full = join(PROJECT_DIR, "web", filePath);
