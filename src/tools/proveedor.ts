@@ -77,7 +77,15 @@ export const leer_solicitud = {
         const camposPdf = await cargarPlantillaCampos(ctx.directory, args.caso);
         campos = camposPdf.map((c) => ({ etiqueta: c.etiqueta, obligatorio: c.obligatorio }));
       }
-      // portal: no hay plantilla de campos adjunta; campos queda vacio.
+      // portal: cargar plantilla-campos igual que pdf si existe.
+      if (solicitud.formato === "portal") {
+        try {
+          const camposPortal = await cargarPlantillaCampos(ctx.directory, args.caso);
+          campos = camposPortal.map((c) => ({ etiqueta: c.etiqueta, obligatorio: c.obligatorio }));
+        } catch {
+          // si no hay plantilla-campos, campos queda vacío.
+        }
+      }
 
       return {
         caso: args.caso,
