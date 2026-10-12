@@ -59,6 +59,25 @@ const server = createServer(async (req, res) => {
       return enviarJSON(res, 200, { ok: true, provider: llm.provider, model: llm.model });
     }
 
+    // Diagnóstico temporal: lista archivos generados
+    if (url.pathname === "/api/debug/out") {
+      const { readdir } = await import("node:fs/promises");
+      const outDir = join(PROJECT_DIR, "out");
+      try {
+        const archivos: string[] = [];
+        const casos = await readdir(outDir).catch(() => []);
+        for (const caso of casos) {
+          const files = await readdir(join(outDir, caso)).catch(() => []);
+          for (const f of files) archivos.push(`out/${caso}/${f}`);
+          const paquete = await readdir(join(outDir, caso, "paquete")).catch(() => []);
+          for (const f of paquete) archivos.push(`out/${caso}/paquete/${f}`);
+        }
+        return enviarJSON(res, 200, { PROJECT_DIR, archivos });
+      } catch (e) {
+        return enviarJSON(res, 200, { PROJECT_DIR, error: String(e) });
+      }
+    }
+
     if (url.pathname === "/api/chat" && req.method === "POST") {
       const body = await leerBody(req);
       const sessionId = String(body.sessionId ?? `sess_${Date.now()}`);
