@@ -63,9 +63,29 @@ export class MockAdapter implements LLMAdapter {
       "hn-agroexport-sula",
       "pa-logistica-istmo",
     ];
+    // Primero buscar en mensajes de usuario (más explícito)
     for (const m of mensajes) {
       if (m.role === "user") {
         for (const c of casos) if (m.content.includes(c)) return c;
+      }
+    }
+    // Si no está en mensajes de usuario, buscar en tool calls ya ejecutadas
+    // (cubre el caso donde el usuario solo dice "envía" sin repetir el nombre)
+    for (let i = mensajes.length - 1; i >= 0; i--) {
+      const m = mensajes[i]!;
+      if (m.role === "tool") {
+        try {
+          const parsed = JSON.parse(m.content);
+          const casoEnData = parsed.data?.caso;
+          if (casoEnData && casos.includes(casoEnData)) return casoEnData;
+        } catch { /* ignorar */ }
+      }
+      // También buscar en los argumentos del assistant tool call
+      if (m.role === "assistant" && m.toolCalls?.length) {
+        for (const tc of m.toolCalls) {
+          const casoArg = (tc.arguments as Record<string, unknown>)?.caso;
+          if (typeof casoArg === "string" && casos.includes(casoArg)) return casoArg;
+        }
       }
     }
     return "co-industrias-delta";
