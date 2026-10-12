@@ -109,7 +109,8 @@ const server = createServer(async (req, res) => {
 
     // --- Archivos generados (out/) ---
     if (url.pathname.startsWith("/out/")) {
-      const full = join(PROJECT_DIR, url.pathname);
+      const relative = url.pathname.replace(/^\//, ""); // quita el / inicial
+      const full = join(PROJECT_DIR, relative);
       if (!full.startsWith(join(PROJECT_DIR, "out"))) {
         res.writeHead(403);
         return res.end("Forbidden");
