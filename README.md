@@ -100,7 +100,4 @@ reto-01/
 
 ## Link de prueba
 
-Pendiente de desplegar. El backend es un único proceso Node sin estado en disco
-(sesiones en memoria), apto para Render / Railway / Fly.io. Comando de arranque:
-`npm install && npm run start`. Si no hay despliegue durante la defensa, se corre
-en local con el adaptador `mock`.
+https://reto-01-agente.onrender.com
