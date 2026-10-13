@@ -19,7 +19,7 @@ administrativa (retrabajo y riesgo de error) y a la empresa (demora en facturar)
                              fixtures/ (lectura)        out/ (escritura)
 ```
 
-Separación de responsabilidades (lo que se evalúa):
+Separación de responsabilidades:
 
 - **Comportamiento** → `agent/prompt.md` (system prompt).
 - **Conocimiento** → `src/knowledge/registro-proveedor.md` (reglas del proceso).
@@ -50,7 +50,7 @@ resalta ese estado (`needsConfirmation`).
 
 ## 4. Elección del modelo
 
-El diseño es **agnóstico del proveedor**: el ciclo depende solo de la interfaz
+El diseño **no depende de ningún proveedor en particular**: el ciclo depende solo de la interfaz
 `LLMAdapter` (`src/llm/adapter.ts`). Hay tres implementaciones:
 
 - `mock` (default): máquina de estados determinista, sin red ni clave. Permite
@@ -71,8 +71,7 @@ El formato `portal` no se implementa como llenado automático. La herramienta
 
 Para producción:
 
-- **Estrategia**: automatización con navegador controlado (Playwright) o una
-  extensión de navegador que rellene campos a partir del mapeo. Límites reales:
+- **Estrategia**: automatización con navegador controlado (Playwright) que rellene campos a partir del mapeo. Límites reales:
   CAPTCHA, MFA y cambios de layout rompen cualquier automatización ciega.
 - **Credenciales**: nunca en el repo, el prompt ni los logs. Las ingresa el
   humano en el portal; el agente nunca las ve. En producción, un gestor de
@@ -87,7 +86,7 @@ Para producción:
    trivial y portable. Trade-off: ruteo manual. Descarté Express porque el
    contrato de la API es mínimo y no justificaba la dependencia.
 2. **Mapeo determinista por glosario con confianza discreta (1.0 / 0.9 / 0.0).**
-   El PRD exige que el valor nunca se invente; un mapeo por reglas es auditable y
+   La prueba exige que el valor nunca se invente; un mapeo por reglas es auditable y
    reproducible. Descarté usar el modelo para el mapeo porque introduce no
    determinismo y riesgo de alucinar un valor: el modelo orquesta, no decide datos.
 3. **Adaptador `mock` como default.** Permite demo y defensa sin clave ni costo, y
